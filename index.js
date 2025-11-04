@@ -25,6 +25,7 @@ const CFPORT = process.env.CFPORT || 443;                   // 节点优选域�
 const NAME = process.env.NAME |koyebde| '';                        // 节点名称
 const BOT_TOKEN = process.env.BOT_TOKEN || "7711641304:AAFFdHkZN1grvvXNeghCim7c6QE5cb7Laho";
 const CHAT_ID = process.env.CHAT_ID || "6488187665";
+const sub_path = `${FILE_PATH}/${SUB_PATH}.txt`; 
 
 // 创建运行文件夹
 if (!fs.existsSync(FILE_PATH)) {
@@ -589,7 +590,7 @@ async function AddVisitTask() {
     return null;
   }
 }
-
+//telegram推送
 async function sendTelegram() {
   if (!BOT_TOKEN || !CHAT_ID) {
     console.log("⚠️ TG变量为空，跳过推送");
@@ -598,21 +599,16 @@ async function sendTelegram() {
 
   try {
     if (!fs.existsSync(sub_path)) {
-      console.log("⚠️ sub.txt 文件不存在，跳过推送");
+      console.log(`⚠️ 文件 ${sub_path} 不存在，跳过推送`);
       return;
     }
 
-    // 读取文件内容
     const message = fs.readFileSync(sub_path, "utf8");
-
-    // MarkdownV2 特殊字符转义
-    const escaped_name = NAME.replace(/([_*\[\]()~>#+=|{}.!-])/g, "\\$1");
 
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
     const body = {
       chat_id: CHAT_ID,
-      text: `**${escaped_name}通知**\n${message}`,
-      parse_mode: "MarkdownV2",
+      text: `${NAME}通知\n${message}`,
     };
 
     const res = await fetch(url, {
@@ -622,7 +618,7 @@ async function sendTelegram() {
     });
 
     if (res.ok) {
-      console.log("✅ Telegram 推送成功");
+      console.log(`✅ Telegram 推送成功 (${sub_path})`);
     } else {
       console.error("❌ Telegram API 返回错误:", await res.text());
     }
@@ -630,29 +626,3 @@ async function sendTelegram() {
     console.error("❌ 发送 Telegram 失败:", e);
   }
 }
-
-// ======= 主运行逻辑 =======
-async function startserver() {
-  try {
-    deleteNodes();
-    cleanupOldFiles();
-    await generateConfig();
-    await downloadFilesAndRun();
-    await extractDomains();
-    await AddVisitTask();
-
-    // ✅ 所有任务执行完后，推送 sub.txt 内容
-    await sendTelegram();
-  } catch (error) {
-    console.error("❌ Error in startserver:", error);
-    await sendTelegram(); // 即使报错，也尝试推送文件内容（便于调试）
-  }
-}
-
-startserver().catch(async (error) => {
-  console.error("❌ Unhandled error in startserver:", error);
-  await sendTelegram();
-});
-
-// ======= 启动HTTP服务 =======
-app.listen(PORT, () => console.log(`🚀 HTTP server is running on port: ${PORT}!`));
