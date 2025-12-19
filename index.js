@@ -28,7 +28,7 @@ const ARGO_AUTH = 'eyJhIjoiZDFlYThmNmI0NzFkMGFkMmYwMDdlZDE5MmZlYzk2ZjkiLCJ0IjoiY
 const ARGO_PORT = 8001;
 const CFIP = '104.16.159.59';
 const CFPORT = 443;
-const NAME = 'TechNode';
+const NAME = 'Tec';
 const BOT_TOKEN = '7711641304:AAFFdHkZN1grvvXNeghCim7c6QE5cb7Laho';
 const CHAT_ID = '6488187665';
 
