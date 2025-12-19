@@ -12,7 +12,7 @@ const execAsync = promisify(exec);
 
 // ==================== 所有配置已硬编码 ====================
 const UPLOAD_URL = '';
-const PROJECT_URL = 'https://surrounding-fawnia-sdadaaa-b924f948.koyeb.app';
+const PROJECT_URL = 'sleepy-heddie-tongjiazh-92c86c0a.koyeb.app';
 const AUTO_ACCESS = false;
 const FILE_PATH = './tmp';
 const SUB_PATH = 'feed';
